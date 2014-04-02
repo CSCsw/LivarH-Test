@@ -30,6 +30,8 @@ adouble func_eval(adouble *x){
   adv[x[1]]-=0.2;
   adv[x[1]-x[0]]=exp((adouble)adv[x[5]]);
   fad+=adv[0]*adv[1]*adv[2]*adv[3]*adv[4]*adv[5];
+//  adv[x[0]]=adv[x[1]];
+//  fad=adv[x[0]]+adv[x[2]];
   return fad;
 }
 
