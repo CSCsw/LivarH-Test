@@ -1,10 +1,8 @@
 /*
-Test advector in ADOL-C
-As R-value, have to explicitly cast?
+Advanced Branching
 */
 #include <math.h>
 #include <adolc/adolc.h>
-#include <adolc/advector.h> 
 
 #define NUM_IND	6
 
@@ -14,14 +12,20 @@ int get_num_ind(){
 void get_initial_value(double *x){
   int i;
   for(i=0;i<NUM_IND;i++){
-    x[i]=(double)(i);
+    x[i]=(double)(i+1);
   }
 }
 adouble func_eval(adouble *x){
   adouble fad=0;
-  x[2]=(x[1]>x[0])*x[1];
-  fad=x[2]*x[1];
+  adouble t1,t2;
+  t1=x[3]*x[4];
+  t2=x[4]*x[5];
+  x[0]=(x[0]!=x[0])*t1;
+  x[3]=sin((x[3]<=x[4])*t2);
+  x[2]=(x[1]+(x[1]>=x[5]))*x[3]*x[4];
+  x[4]=x[0]*x[1]*x[2];
+  x[5]=x[3]*x[4]*x[5];
+  fad=fad+x[0]+x[1]+x[2]+x[3]+x[4]+x[5];
   return fad;
 }
-
 
