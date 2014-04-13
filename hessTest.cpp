@@ -32,6 +32,7 @@ void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c
     for(j=0;j<n;j++){
       if (fabs(H[i][j])>def_tol){
         printf("WRONG!\n");
+        exit(-1);
         return;
       }
     }
@@ -112,6 +113,7 @@ int main(int argc, char *argv[]) {
 
   delete[] x;
   delete[] xad;
+  return 0;
 }
 
 
