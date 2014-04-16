@@ -4,6 +4,7 @@ hessian() in ADOL-C and edge_hess() (which implements the edge_pushing algorithm
 
 edge_hess() has the same parameters as sparse_hess()
 Except a different meaning for options[2]:
+
     options[0] = 0 (Default)     \\ Disable Preaccumulation
                = 1               \\ Enable Preaccumulation 
                                  \\ (need --enable-preacc when configure ADOL-C)
