@@ -12,8 +12,5 @@ Except a different meaning for options[2]:
     options[0] = 0               \\ Use the ADOL-C's location index
                = 1 (Default)     \\ Translate the index into a monotonic sequence
 
-Include the header 
-
-#include <adolc/hessian/edge_main.h>
-
+Include the header "adolc/hessian/edge_main.h"
 And then call edge_hess() in the same way as if sparse_hess() is called. 
