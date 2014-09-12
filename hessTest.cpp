@@ -8,11 +8,11 @@
 #include <adolc/hessian/edge_main.h>
 
 #define COMPUT_GRAPH 1
-#define PRE_ACC 1
+#define PRE_ACC 0
 
 #define tag 1
 #define edge_pushing 1
-#define _compare_with_full
+//#define _compare_with_full
 
 //#define _PRINTOUT
 #define def_tol (0.00001)
@@ -28,7 +28,7 @@ void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c
   for(i=0;i<nnz;i++){
     H[r[i]][c[i]]-=v[i];
   }
-  for(i=0;i<n;i++){
+for(i=0;i<n;i++){
     for(j=0;j<n;j++){
       if (fabs(H[i][j])>def_tol){
         printf("WRONG!\n");
@@ -49,18 +49,20 @@ int main(int argc, char *argv[]) {
   double *x;
   x=new double[n];
   xad=new adouble[n];
-  get_initial_value(x);
+get_initial_value(x);
 
   printf("evaluating the function...");
-  trace_on(tag);
-  for(i=0;i<n;i++)
-  {
-    xad[i] <<= x[i];  
-  }
-  fad=func_eval(xad); 
-  fad >>= f;
-  trace_off();
+//trace_on(tag);
+//  for(i=0;i<n;i++)
+//  {
+//    xad[i] <<= x[i];  
+//  }
+//  fad=func_eval(xad); 
+//  fad >>= f;
+return 0;
+trace_off();
   printf("done!\n");
+  return 0;
 //  printf("function value  =<%10.20f>\n",f);
 //  function(tag,1,n,x,&f);
 //  printf("adolc func value=<%10.20f>\n",f);
@@ -84,7 +86,7 @@ int main(int argc, char *argv[]) {
     printf("\n");
 #endif
 #endif
-/*
+
   unsigned int    *rind  = NULL;
   unsigned int    *cind  = NULL;
   double *values = NULL;
@@ -93,8 +95,8 @@ int main(int argc, char *argv[]) {
   options[0]=PRE_ACC;
   options[1]=COMPUT_GRAPH;
   gettimeofday(&tv1,NULL);
-  edge_hess(tag, 1, n, x, &nnz, &rind, &cind, &values, options);
-//  sparse_hess(tag,n,0,x, &nnz, &rind, &cind, &values, options);
+//  edge_hess(tag, 1, n, x, &nnz, &rind, &cind, &values, options);
+  sparse_hess(tag,n,0,x, &nnz, &rind, &cind, &values, options);
   gettimeofday(&tv2,NULL);
   printf("Sparse Hessian: edge pushing cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 
@@ -108,11 +110,11 @@ int main(int argc, char *argv[]) {
   compare_matrix(n,H,nnz,rind,cind,values);
   myfree2(H);
 #endif
-//  printf("nnz=%d\n", nnz);
+  printf("nnz=%d\n", nnz);
   free(rind); rind=NULL;
   free(cind); cind=NULL;
   free(values); values=NULL;
-*/
+
   delete[] x;
   delete[] xad;
   return 0;
