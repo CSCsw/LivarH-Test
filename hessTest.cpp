@@ -8,13 +8,13 @@
 #include <adolc/hessian/edge_main.h>
 
 #define COMPUT_GRAPH 1
-#define PRE_ACC 0
+#define PRE_ACC 1
 
 #define tag 1
 #define edge_pushing 1
 #define _compare_with_full
 
-#define _PRINTOUT
+//#define _PRINTOUT
 #define def_tol (0.00001)
 
 
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     printf("\n");
 #endif
 #endif
-
+/*
   unsigned int    *rind  = NULL;
   unsigned int    *cind  = NULL;
   double *values = NULL;
@@ -94,23 +94,25 @@ int main(int argc, char *argv[]) {
   options[1]=COMPUT_GRAPH;
   gettimeofday(&tv1,NULL);
   edge_hess(tag, 1, n, x, &nnz, &rind, &cind, &values, options);
+//  sparse_hess(tag,n,0,x, &nnz, &rind, &cind, &values, options);
   gettimeofday(&tv2,NULL);
   printf("Sparse Hessian: edge pushing cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 
 #ifdef _PRINTOUT
   for(i=0;i<nnz;i++){
-    printf("<%d,%d>:<%10.10f>\n",rind[i],cind[i],values[i]);
+//    printf("<%d,%d>:<%10.10f>\n",rind[i],cind[i],values[i]);
+    printf("%d %d \n", rind[i], cind[i]);
   }
 #endif
 #ifdef _compare_with_full
   compare_matrix(n,H,nnz,rind,cind,values);
   myfree2(H);
 #endif
-
+//  printf("nnz=%d\n", nnz);
   free(rind); rind=NULL;
   free(cind); cind=NULL;
   free(values); values=NULL;
-
+*/
   delete[] x;
   delete[] xad;
   return 0;
