@@ -1,17 +1,3 @@
-/*----------------------------------------------------------------------------
- ADOL-C -- Automatic Differentiation by Overloading in C++
- File:     sparse_hessian.cpp
- Revision: $Id: sparse_hessian.cpp 203 2011-02-23 11:33:40Z kulshres $
- Contents: example for computation of sparse hessians
-
- Copyright (c) Andrea Walther, Andreas Griewank, Andreas Kowarz, 
-               Hristo Mitev, Sebastian Schlenkrich, Jean Utke, Olaf Vogel
-  
- This file is part of ADOL-C. This software is provided as open source.
- Any use, reproduction, or distribution of the software constitutes 
- recipient's acceptance of the terms of the accompanying license file.
- 
----------------------------------------------------------------------------*/
 
 #include <math.h>
 #include <cstdlib>
@@ -23,16 +9,16 @@
 #include <adolc/hessian/edge_main.h>
 
 #define COMPUT_GRAPH 1
-#define PRE_ACC 1
+#define PRE_ACC 0
 
 #define tag 1
 
 //#define direct 1
 //#define indirect 1
 #define edge_pushing 1
-//#define _compare_with_full
+#define _compare_with_full
 
-//#define _PRINTOUT
+#define _PRINTOUT
 #define def_tol (0.00001)
 
 double hessian_crc;
@@ -44,6 +30,23 @@ extern void get_initial_value(double *x);
 extern adouble func_eval(adouble *x);
 
 void printmat(char* kette, int n, int m, double** M);
+
+void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c, double *v){
+  int i,j;
+  for(i=0;i<nnz;i++){
+    H[r[i]][c[i]]-=v[i];
+  }
+for(i=0;i<n;i++){
+    for(j=0;j<n;j++){
+      if (fabs(H[i][j])>def_tol){
+        printf("WRONG!\n");
+        exit(-1);
+        return;
+      }
+    }
+  }
+  printf("CORRECT!\n");
+}
 
 int main(int argc, char *argv[]) {
 //    int n=6;
@@ -80,8 +83,6 @@ printf("evaluating the function...");
 		xad[i] <<= x[i];				  // active independs        //  
 	  } 
       fad = func_eval(xad);
-//      fad=xad[0]*xad[1]*xad[2];
-//      fad+=xad[0]*xad[1]+xad[1]*xad[2]*3.0;
       fad >>= f;
 
     trace_off();
@@ -197,6 +198,9 @@ printf("Sparse Hessian: edge pushing cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_s
     free(values0); values0=NULL;
 #endif
 #ifdef edge_pushing
+#ifdef _compare_with_full
+    compare_matrix(n, H, nnz1, rind1, cind1, values1);
+#endif
     free(rind1); rind1=NULL;
     free(cind1); cind1=NULL;
     free(values1); values1=NULL;

@@ -4,7 +4,7 @@ Structured Jacobian problem
 #include <math.h>
 #include <adolc/adolc.h>
 
-#define NUM_IND	10000
+#define NUM_IND	20000
 
 #define max(a,b) ((a>b)?a:b)
 #define min(a,b) ((a<b)?a:b)

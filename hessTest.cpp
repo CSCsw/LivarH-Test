@@ -11,8 +11,8 @@
 #define PRE_ACC 0
 
 #define tag 1
-#define edge_pushing 1
-//#define _compare_with_full
+//#define edge_pushing 1
+#define _compare_with_full
 
 //#define _PRINTOUT
 #define def_tol (0.00001)
@@ -52,17 +52,15 @@ int main(int argc, char *argv[]) {
 get_initial_value(x);
 
   printf("evaluating the function...");
-//trace_on(tag);
-//  for(i=0;i<n;i++)
-//  {
-//    xad[i] <<= x[i];  
-//  }
-//  fad=func_eval(xad); 
-//  fad >>= f;
-return 0;
+trace_on(tag);
+  for(i=0;i<n;i++)
+  {
+    xad[i] <<= x[i];  
+  }
+  fad=func_eval(xad); 
+  fad >>= f;
 trace_off();
   printf("done!\n");
-  return 0;
 //  printf("function value  =<%10.20f>\n",f);
 //  function(tag,1,n,x,&f);
 //  printf("adolc func value=<%10.20f>\n",f);
@@ -87,6 +85,7 @@ trace_off();
 #endif
 #endif
 
+#ifdef edge_pushing
   unsigned int    *rind  = NULL;
   unsigned int    *cind  = NULL;
   double *values = NULL;
@@ -102,19 +101,25 @@ trace_off();
 
 #ifdef _PRINTOUT
   for(i=0;i<nnz;i++){
-//    printf("<%d,%d>:<%10.10f>\n",rind[i],cind[i],values[i]);
-    printf("%d %d \n", rind[i], cind[i]);
+    printf("<%d,%d>:<%10.10f>\n",cind[i],rind[i],values[i]);
+//    printf("%d %d \n", rind[i], cind[i]);
   }
 #endif
+#endif
+
 #ifdef _compare_with_full
-  compare_matrix(n,H,nnz,rind,cind,values);
+#ifdef edge_pushing
+  compare_matrix(n,H,nnz,cind,rind,values);
+#endif
   myfree2(H);
 #endif
+
+#ifdef edge_pushing
   printf("nnz=%d\n", nnz);
   free(rind); rind=NULL;
   free(cind); cind=NULL;
   free(values); values=NULL;
-
+#endif
   delete[] x;
   delete[] xad;
   return 0;

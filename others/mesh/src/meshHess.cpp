@@ -1,4 +1,3 @@
-
 #include "fcn.h"
 #include <stdio.h>
 #include <sys/time.h>
@@ -115,8 +114,8 @@ int main(int argc, char **argv){
     char hessFile[20]="hess.out";
     char edgeFile[20]="edge.out";
     if (argc>1){
-        printf("Reading mesh data=%d, analytic_hess>>%s, edge_hess>>%s (should be the same)\n",meshFile, hessFile,edgeFile);
-        outputFlag=1;
+        printf("Reading mesh data=%s, analytic_hess>>%s, edge_hess>>%s (should be the same)\n",meshFile, hessFile,edgeFile);
+        outputFlag = atoi(argv[1]);
         if (argc>2){
             hessFlag=atoi(argv[2]);
         }
@@ -213,6 +212,7 @@ gettimeofday(&tv2,NULL);
     printf("Total Analytic    Hessian Time Estimate=<%10.6f>\n",hTime/nh);
     printf("Total Overloaded Function Time Estimate=<%10.6f>\n",afTime/nh);
     printf("Total Overloaded  Hessian Time Estimate=<%10.6f>\n",ahTime/nh);
+    freeMesh(&m);
     return 0;
 }
 int tryADOLC(const Mesh *m,int nh){

@@ -4,7 +4,7 @@ Chained Rosenbrock function
 #include <math.h>
 #include <adolc/adolc.h>
 
-#define NUM_IND	100
+#define NUM_IND	20000
 
 int get_num_ind(){
   return NUM_IND;
