@@ -15,10 +15,11 @@
 
 //#define direct 1
 //#define indirect 1
-#define edge_pushing 1
-#define _compare_with_full
+#define LIVARHNO 1
+//#define LIVARHACC 1
+//#define _compare_with_full
 
-#define _PRINTOUT
+//#define _PRINTOUT
 #define def_tol (0.00001)
 
 double hessian_crc;
@@ -75,7 +76,7 @@ struct timeval tv1,tv2;
 
 get_initial_value(x);
 	
-printf("evaluating the function...");
+//printf("evaluating the function...");
      trace_on(tag);
 
      for(i=0;i<n;i++) 
@@ -97,7 +98,7 @@ gettimeofday(&tv1,NULL);
     hessian(tag,n,x,H);
 printf("done\n");
 gettimeofday(&tv2,NULL);
-printf("Computing the full hessian cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+printf("Computing the full hessian cost %.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 #ifdef _PRINTOUT
     for(i=0;i<n;i++){
       for(j=0;j<n;j++){
@@ -133,7 +134,7 @@ printf("Computing the full hessian cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec
     options0[1] = 0;          /*                       indirect recovery (default) */ 
 #endif
 
-#ifdef edge_pushing
+#ifdef LIVARHNO
     unsigned int    *rind1  = NULL;
     unsigned int    *cind1  = NULL;
     double *values1 = NULL;
@@ -141,69 +142,105 @@ printf("Computing the full hessian cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec
     int options1[2];
 #endif
 
-#ifdef direct 
-printf("\n**********Safe Mode, Direct recovery*******************\n");
+#ifdef LIVARHACC
+    unsigned int    *rind2  = NULL;
+    unsigned int    *cind2  = NULL;
+    double *values2 = NULL;
+    int nnz2;
+    int options2[2];
+#endif
 
+#ifdef direct 
 gettimeofday(&tv1,NULL);
     sparse_hess(tag, n, 0, x, &nnz, &rind, &cind, &values, options);
 gettimeofday(&tv2,NULL);
-printf("Sparse Hessian: direct recovery cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+printf("Sparse Hessian: STAR cost %.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 #ifdef _PRINTOUT
   for(i=0;i<nnz0;i++){
     printf("<%d,%d>:<%10.10f>\n",rind[i],cind[i],values[i]);
   }
 #endif
+  free(rind); rind=NULL;
+  free(cind); cind=NULL;
+  free(values); values=NULL;
 #endif
 
 #ifdef indirect 
-printf("\n**********Safe Mode, indirect recovery*******************\n");
 
 gettimeofday(&tv1,NULL);
     sparse_hess(tag, n, 0, x, &nnz0, &rind0, &cind0, &values0, options0);
 gettimeofday(&tv2,NULL);
-printf("Sparse Hessian: indirect recovery cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+printf("Sparse Hessian: ACYCLIC cost %.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 #ifdef _PRINTOUT
   for(i=0;i<nnz0;i++){
     printf("<%d,%d>:<%10.10f>\n",rind0[i],cind0[i],values0[i]);
   }
 #endif
+  free(rind0); rind0=NULL;
+  free(cind0); cind0=NULL;
+  free(values0); values0=NULL;
 #endif
 
-#ifdef edge_pushing
-printf("\n**********Safe Mode, Edge Pushing*******************\n");
+#ifdef LIVARHNO
 
-    options1[0]=PRE_ACC;
-    options1[1]=COMPUT_GRAPH;
+    options1[0]=0;
+    options1[1]=1;
 gettimeofday(&tv1,NULL);
     edge_hess(tag, 1, n, x, &nnz1, &rind1, &cind1, &values1, options1);
 gettimeofday(&tv2,NULL);
-printf("Sparse Hessian: edge pushing cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
-
+printf("Sparse Hessian: LIVARHNO cost %.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 #ifdef _PRINTOUT
   for(i=0;i<nnz1;i++){
     printf("<%d,%d>:<%10.10f>\n",rind1[i],cind1[i],values1[i]);
   }
 #endif
-#endif
-
-#ifdef direct
-    free(rind); rind=NULL;
-    free(cind); cind=NULL;
-    free(values); values=NULL;
-#endif
-
-#ifdef indirect
-    free(rind0); rind0=NULL;
-    free(cind0); cind0=NULL;
-    free(values0); values0=NULL;
-#endif
-#ifdef edge_pushing
 #ifdef _compare_with_full
     compare_matrix(n, H, nnz1, rind1, cind1, values1);
 #endif
-    free(rind1); rind1=NULL;
-    free(cind1); cind1=NULL;
-    free(values1); values1=NULL;
+    int *counter = (int*)malloc(sizeof(int)*n);
+    for (i=0;i<n;i++) {
+        counter[i]=0;
+    }
+    for(i=0; i<nnz1; i++) {
+      counter[rind1[i]]++;
+      if (rind1[i] != cind1[i]) {
+          counter[cind1[i]]++;
+      }
+    }
+    int max=0;
+    int min=n;
+    double s=0;
+    for(i=0;i<n;i++) {
+      max = (max>counter[i])?max:counter[i];
+      min = (min<counter[i])?min:counter[i];
+      s=s+counter[i];  
+    }
+    printf("#nnz: max=%d, min=%d, avg=%.5f\n", max, min, s/n);
+
+  free(rind1); rind1=NULL;
+  free(cind1); cind1=NULL;
+  free(values1); values1=NULL;
+#endif
+
+#ifdef LIVARHACC
+
+    options2[0]=1;
+    options2[1]=1;
+gettimeofday(&tv1,NULL);
+    edge_hess(tag, 1, n, x, &nnz2, &rind2, &cind2, &values2, options2);
+gettimeofday(&tv2,NULL);
+printf("Sparse Hessian: LIVARHACC cost %.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#ifdef _PRINTOUT
+  for(i=0;i<nnz2;i++){
+    printf("<%d,%d>:<%10.10f>\n",rind2[i],cind2[i],values2[i]);
+  }
+#endif
+#ifdef _compare_with_full
+    compare_matrix(n, H, nnz2, rind2, cind2, values2);
+#endif
+  free(rind2); rind2=NULL;
+  free(cind2); cind2=NULL;
+  free(values2); values2=NULL;
 #endif
 
   delete[] x;

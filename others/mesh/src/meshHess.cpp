@@ -178,11 +178,19 @@ gettimeofday(&tv2,NULL);
     double *values = NULL;
     int nnz;
 gettimeofday(&tv1,NULL);
-    if (hessFlag==0){
+    if (hessFlag == 0){
         edge_hess(tag, 1, n, m->v, &nnz, &rind, &cind, &values, options);
     }
-    else{
-        sparse_hess(tag, n, 0, m->v, &nnz, &rind, &cind, &values, options);
+    else if (hessFlag == 1){
+//        sparse_hess(tag, n, 0, m->v, &nnz, &rind, &cind, &values, options);
+    } else if (hessFlag == 2) {
+//      Graph *HG = NULL;
+//      double *gradient = NULL;
+//      reverse_hessian(tag, m->v, &gradient, &HG, n, NULL);
+//      HG->print();
+//      nnz=HG->to_CSR((int**)&rind, (int**)&cind, &values);
+//      delete HG;
+//      delete[] gradient;
     }
 gettimeofday(&tv2,NULL);
     ahTime+=(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000;

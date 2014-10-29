@@ -9,8 +9,12 @@ Except a different meaning for options[2]:
                = 1               \\ Enable Preaccumulation 
                                  \\ (need --enable-preacc when configure ADOL-C)
 
-    options[0] = 0               \\ Use the ADOL-C's location index
-               = 1 (Default)     \\ Translate the index into a monotonic sequence
+    options[0] = 1               \\ Deprecated
 
 Include the header "adolc/hessian/edge_main.h"
-And then call edge_hess() in the same way as if sparse_hess() is called. 
+And then call edge_hess() in the same way as if sparse_hess() is called.
+
+
+edgeHess.cpp & functions/test*.cpp : simple & synthetic test functions 
+others/mesh/ : mesh optimization problem
+others/random/ : random hessian generator

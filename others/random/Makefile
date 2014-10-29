@@ -16,7 +16,7 @@ CXX = g++
 CXXFLAGS = -g
 
 # Libraries necessary to link with 
-LIBS_col = -L${HOME}/adolc_edge/lib -ladolc
+LIBS_col = -L${HOME}/adolc_edge/lib64 -ladolc
 
 # -lColPack
 

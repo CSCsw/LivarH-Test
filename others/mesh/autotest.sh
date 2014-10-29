@@ -13,12 +13,12 @@ for testMethod in {0,1}; do
   for testPreacc in {0,1}; do
     for testIndex in {0,1}; do
         make > temp.out
-        command="./meshHess 0 $testMethod $testPreacc $testIndex";
+        command="./meshHess 1 $testMethod $testPreacc $testIndex";
         echo "$command";
         $command > temp.out;
         sh -c "sort hess.out > hess.sorted";
         sh -c "sort edge.out > edge.sorted";
-#        [[ `diff hess.sorted edge.sorted` ]] &&  (echo "wrong!";exit) || (echo "meshHess($testMethod, $testPreacc, $testIndex) OK!");
+        [[ `diff hess.sorted edge.sorted` ]] &&  (echo "wrong!";exit) || (echo "meshHess($testMethod, $testPreacc, $testIndex) OK!");
     done
   done
 done
