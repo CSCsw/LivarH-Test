@@ -16,5 +16,7 @@ And then call edge_hess() in the same way as if sparse_hess() is called.
 
 
 edgeHess.cpp & functions/test*.cpp : simple & synthetic test functions 
+
 others/mesh/ : mesh optimization problem
+
 others/random/ : random hessian generator
