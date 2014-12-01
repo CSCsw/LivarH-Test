@@ -95,7 +95,6 @@ void get_initial_value(double *x){
     x[i]=i+1;
   }
 }
-/***************************************************************************/
 adouble func_eval(adouble * x){
   srand(12345);
   int  i, j, k;
@@ -104,7 +103,7 @@ adouble func_eval(adouble * x){
   for(i = 0; i < NUM_IND; ++i) {
     for(j = 0; j < K_NNZ; j++) {
       r = rand() % NUM_IND;
-      STMT_1_128;
+      STMT_4_16;
     }
   }
   return(fad);

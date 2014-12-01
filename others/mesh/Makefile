@@ -1,8 +1,12 @@
-CXX=/usr/local/bin/g++
+CXX=g++
+
+#PATH TO YOUR ADOL-C
+ADOLCPATH=/home/zsdfe/adolc_edge
+ADOLCLIBS=$(ADOLCPATH)/lib
 
 all:	meshHess
 
 meshHess:	FORCE
-	$(CXX) -O3 -I/Users/wang970/adolc_edge/include/ -I/usr/local/include/ -I./include -o meshHess ./src/meshHess.cpp ./src/fcn3e_am.c ./src/elem3.c ./src/tet.c ./src/mesh3.c ./src/mesh.c ./src/opt3.c ./src/pre3.c -L/Users/wang970/adolc_edge/lib64 -ladolc
+	$(CXX) -O3 -I$(ADOLCPATH)/include/ -I/usr/local/include/ -I./include -o meshHess ./src/meshHess.cpp ./src/fcn3e_am.c ./src/elem3.c ./src/tet.c ./src/mesh3.c ./src/mesh.c ./src/opt3.c ./src/pre3.c -L$(ADOLCLIBS) -ladolc
 			
 FORCE:

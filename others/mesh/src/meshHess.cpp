@@ -114,7 +114,7 @@ int main(int argc, char **argv){
     char hessFile[20]="hess.out";
     char edgeFile[20]="edge.out";
     if (argc>1){
-        printf("Reading mesh data=%s, analytic_hess>>%s, edge_hess>>%s (should be the same)\n",meshFile, hessFile,edgeFile);
+        printf("Reading mesh data=%s, analytic_hess>>%s, edge_hess>>%s (should be the same after sorting)\n",meshFile, hessFile,edgeFile);
         outputFlag = atoi(argv[1]);
         if (argc>2){
             hessFlag=atoi(argv[2]);
@@ -182,7 +182,7 @@ gettimeofday(&tv1,NULL);
         edge_hess(tag, 1, n, m->v, &nnz, &rind, &cind, &values, options);
     }
     else if (hessFlag == 1){
-//        sparse_hess(tag, n, 0, m->v, &nnz, &rind, &cind, &values, options);
+        sparse_hess(tag, n, 0, m->v, &nnz, &rind, &cind, &values, options);
     } else if (hessFlag == 2) {
 //      Graph *HG = NULL;
 //      double *gradient = NULL;

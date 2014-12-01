@@ -50,11 +50,6 @@ for(i=0;i<n;i++){
 }
 
 int main(int argc, char *argv[]) {
-//    int n=6;
-//    double f, x[6];
-//    adouble fad, xad[6];
-//    int i, j;
-
 /****************************************************************************/
 /*******                function evaluation                   ***************/
 /****************************************************************************/
@@ -64,37 +59,28 @@ int main(int argc, char *argv[]) {
     long double c0,c1, Mytime;
 struct timeval tv1,tv2;
     n=get_num_ind();
-    //----------------------------------------*/
+
 // Variables associated to function calculation and the functions tape!
-/*--------------------------------------------------------------------------*/
-        adouble * xad;
-        xad = new adouble [n];
-	adouble fad;
-	double f;
-	double *x = new double [n]; 
+    adouble * xad;
+    xad = new adouble [n];
+    adouble fad;
+    double f;
+    double *x = new double [n]; 
 /*---------------Taping the function---------------------------------------*/
 
 get_initial_value(x);
-	
-//printf("evaluating the function...");
-     trace_on(tag);
-
-     for(i=0;i<n;i++) 
-	  {
-		xad[i] <<= x[i];				  // active independs        //  
-	  } 
-      fad = func_eval(xad);
-      fad >>= f;
-
+    trace_on(tag);
+    for(i=0;i<n;i++) {
+      xad[i] <<= x[i];				  // active independs
+    } 
+    fad = func_eval(xad);
+    fad >>= f;
     trace_off();
-
 #ifdef _compare_with_full
     double **H;
     H = myalloc2(n,n);
 printf("computing full hessain....");
-
 gettimeofday(&tv1,NULL);
-
     hessian(tag,n,x,H);
 printf("done\n");
 gettimeofday(&tv2,NULL);

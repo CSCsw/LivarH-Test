@@ -14,15 +14,13 @@
 #define edge_pushing 1
 #define _compare_with_full
 
-#define _PRINTOUT
-#define def_tol (0.00001)
-
+//#define _PRINTOUT
+#define def_tol (0.000001)
 
 extern int get_num_ind();
 extern void get_initial_value(double *x);
 extern adouble func_eval(adouble *x);
 
-//void printmat(char* kette, int n, int m, double** M);
 void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c, double *v){
   int i,j;
   for(i=0;i<nnz;i++){
