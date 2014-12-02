@@ -26,21 +26,36 @@ Please refer to hessTest.cpp to see how to choose the algorithms.
 
 
 others/mesh/ : mesh optimization problem
+
 A Makefile is provided, user need to change the ADOLC path in that file.
+
 Then compile with "make" command. To run the test, use
+
 "./meshHess $testdata $testMethod $option0 $option1"
+
 For example:
+
 "./meshHess gear.mesh 0 0 1"
+
 $testdata: the mesh data to be use, we reported "gear.mseh", "duct12.mesh" and "duct8.mesh".
+
 $testMethod: 0 means edge_hess(), 1 means ADOL-C sparse_hess()
+
 $option0/$option1: options[2] provided with the selected methods.
+
 For sparse_hess() :
+
 options[0] = 0 (safe mode, default) / 1 (tight mode)
+
 options[1] = 0 (indirect recovery, default) /1 (direct recovery)
+
 For edge_hess():
+
 options[0] = 0 (LivarH) / 1 (LivarHAcc)
+
 options[1] == 1 (fixed as 1, not used anymore)
 
 
 others/random/ : random hessian generator
+
 Also a Makefile is provided. The "hessTest.cpp" is exactly the same as the one used in synthetic tests. And in the appendix of the paper contains the description of  "f_hessian.cpp".
