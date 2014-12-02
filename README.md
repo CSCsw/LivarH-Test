@@ -16,6 +16,8 @@ And then call edge_hess() in the same way as if sparse_hess() is called.
 
 
 edgeHess.cpp & functions/test*.cpp : simple & synthetic test functions 
+Some of these test function requires additional flags when configure ADOL-C.
+So in order to run all the tests, add the flags "--enable-atrig-erf --enable-advanced-branching" when configure ADOL-C.
 
 others/mesh/ : mesh optimization problem
 
