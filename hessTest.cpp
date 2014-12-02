@@ -11,17 +11,20 @@
 #define tag 1
 
 
+// Pick one method from the following to evaluate the sparse Hessian
 #define LIVARH
 //#define LIVARHACC
 //#define DIRECT
 //#define INDIRECT
 
+// Define this macro will check the results with a full Hessian routine
+// Do NOT use it with large matrix
 #define COMPARE_WITH_FULL_HESS
 
-//#define PRINT_RESULTS
+// Define this macro will print out all results
+// #define PRINT_RESULTS
 
 #define def_tol (0.000001)
-
 
 // Basically, one can implement his own objective function by implementing
 // the following 3 functions:

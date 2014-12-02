@@ -104,32 +104,34 @@ int main(int argc, char **argv){
     Mesh *m = NULL;
 
 //Write result to file or not
-    int outputFlag=0;
-    int hessFlag=0;
+    int outputFlag = 1;
+    int hessFlag = 0;
     int options[2];
     options[0]=0;
     options[1]=1;
 
-    char meshFile[20]="gear.mesh";
+    char *meshFile=argv[1];
     char hessFile[20]="hess.out";
     char edgeFile[20]="edge.out";
-    if (argc>1){
-        printf("Reading mesh data=%s, analytic_hess>>%s, edge_hess>>%s (should be the same after sorting)\n",meshFile, hessFile,edgeFile);
-        outputFlag = atoi(argv[1]);
-        if (argc>2){
-            hessFlag=atoi(argv[2]);
-        }
-        if (argc>4){
-            options[0]=atoi(argv[3]);
-            options[1]=atoi(argv[4]);
-        }
+    printf("Reading mesh data=%s ....",meshFile);
+    if (argc>2){
+        hessFlag = atoi(argv[2]);
+    } else {
+        hessFlag = 0;
+    }
+    if (argc>4){
+        options[0] = atoi(argv[3]);
+        options[1] = atoi(argv[4]);
+    } else {
+        options[0] = 0;
+        options[1] = 0;
     }
     if (readMesh(meshFile, &m)) {
         freeMesh(&m);
         return -1;
     }
     hMesh(m);
-    printf("read mesh done..\n");
+    printf("read mesh done.\n");
     struct timeval tv1,tv2;
     FILE *fp1;
     FILE *fp2;
@@ -137,7 +139,7 @@ int main(int argc, char **argv){
         fp1=fopen(hessFile,"w");
         fp2=fopen(edgeFile,"w");
     }
-    printf("Trying hessian via ADOL-C\n");
+    printf("Evaluating hessian...\n");
     unsigned int tag=1;
     int i;
     int nv=m->nv;
@@ -182,15 +184,8 @@ gettimeofday(&tv1,NULL);
         edge_hess(tag, 1, n, m->v, &nnz, &rind, &cind, &values, options);
     }
     else if (hessFlag == 1){
-        sparse_hess(tag, n, 0, m->v, &nnz, &rind, &cind, &values, options);
+        sparse_hess(tag, n, 0, m->v, &nnz, &cind, &rind, &values, options);
     } else if (hessFlag == 2) {
-//      Graph *HG = NULL;
-//      double *gradient = NULL;
-//      reverse_hessian(tag, m->v, &gradient, &HG, n, NULL);
-//      HG->print();
-//      nnz=HG->to_CSR((int**)&rind, (int**)&cind, &values);
-//      delete HG;
-//      delete[] gradient;
     }
 gettimeofday(&tv2,NULL);
     ahTime+=(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000;
@@ -199,13 +194,12 @@ gettimeofday(&tv2,NULL);
             x=rind[i]/3;
             y=cind[i]/3;
             if ((p[x]>=0) && (p[y]>=0)){
-//                fprintf(fp,"<%d,%d>:<%10.10f>\n",rind[i],cind[i],values[i]);
-                fprintf(fp2,"%15.8f\n",values[i]);
+                fprintf(fp2,"%15.8f\n", values[i]);
                 ++counter;
             }
         }
         for(i=0;i<m->nz;i++){
-            fprintf(fp1,"%15.8f\n",m->dat[i]);
+            fprintf(fp1,"%15.8f\n", m->dat[i]);
         }
         fclose(fp1);
         fclose(fp2);

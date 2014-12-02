@@ -3,24 +3,27 @@ CXX="g++"
 CXXFLAGS="-O3"
 AD_LIBS="-L${HOME}/adolc_edge/lib -ladolc"
 AD_INCL="-I${HOME}/adolc_edge/include/ -I/usr/local/include/"
+meshdata="gear.mesh"
 
-#function trapFunc {
-#echo "$testfunc   Error";
-#}
-
-#trap 'trapFunc $testfunc ; exit' EXIT ERR
-for testMethod in {0,1}; do
-  for testPreacc in {0,1}; do
-    for testIndex in {0,1}; do
+for testMethod in 0 1
+do
+  for option0 in 0 1
+  do
+    for option1 in 0 1
+    do
         make > temp.out
-        command="./meshHess 1 $testMethod $testPreacc $testIndex";
+        command="./meshHess $meshdata $testMethod $option0 $option1";
         echo "$command";
-        $command > temp.out;
-        sh -c "sort hess.out > hess.sorted";
-        sh -c "sort edge.out > edge.sorted";
-        [[ `diff hess.sorted edge.sorted` ]] &&  (echo "wrong!";exit) || (echo "meshHess($testMethod, $testPreacc, $testIndex) OK!");
+        $command > output.txt;
+        sort hess.out > hess.sorted;
+        sort edge.out > edge.sorted;
+        cmp -s hess.sorted edge.sorted > /dev/null;
+        if [ $? -eq 1 ]; then
+          echo "WRONG!"
+        else
+          echo "messHess($meshdata, $testMethod, $option0, $option1) CORRECT"
+        fi
     done
   done
 done
 rm meshHess *.out *.sorted *.tap
-trap '' EXIT
