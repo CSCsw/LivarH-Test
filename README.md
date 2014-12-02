@@ -14,7 +14,7 @@ Except edge_hess() has the dependents check but does not have a repeat flag, and
 Include the header "adolc/hessian/edge_main.h"
 And then call edge_hess() in the same way as if sparse_hess() is called.
 
-hessTest.cpp & functions/test*.cpp : simple & synthetic test functions 
+## hessTest.cpp & functions/test*.cpp : simple & synthetic test functions 
 
 test1-test6: simple functionality tests, some of them may require flags "--enable-atrig-erf --enable-advanced-branching" when configure ADOL-C.
 
@@ -25,7 +25,7 @@ Please refer to autotest.sh to see how to run all the tests automatically.
 Please refer to hessTest.cpp to see how to choose the algorithms.
 
 
-others/mesh/ : mesh optimization problem
+##others/mesh/ : mesh optimization problem
 
 A Makefile is provided, user need to change the ADOLC path in that file.
 
@@ -44,18 +44,16 @@ $testMethod: 0 means edge_hess(), 1 means ADOL-C sparse_hess()
 $option0/$option1: options[2] provided with the selected methods.
 
 For sparse_hess() :
-
+```
 options[0] = 0 (safe mode, default) / 1 (tight mode)
-
 options[1] = 0 (indirect recovery, default) /1 (direct recovery)
-
+```
 For edge_hess():
-
+```
 options[0] = 0 (LivarH) / 1 (LivarHAcc)
-
 options[1] == 1 (fixed as 1, not used anymore)
+```
 
-
-others/random/ : random hessian generator
+##others/random/ : random hessian generator
 
 Also a Makefile is provided. The "hessTest.cpp" is exactly the same as the one used in synthetic tests. And in the appendix of the paper contains the description of  "f_hessian.cpp".
