@@ -24,6 +24,7 @@ Please refer to autotest.sh to see how to run all the tests automatically.
 
 Please refer to hessTest.cpp to see how to choose the algorithms.
 
+Only overall runtime is reported, for breakdown performance for Direct/Indirect methods in ADOL-C, please instrument sparse_hess() in "ADOL-C/src/sparse/sparsedriver.cpp".
 
 ##others/mesh/ : mesh optimization problem
 
