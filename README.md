@@ -43,3 +43,4 @@ options[1] == 1 (fixed as 1, not used anymore)
 
 
 others/random/ : random hessian generator
+Also a Makefile is provided. The "hessTest.cpp" is exactly the same as the one used in synthetic tests. And in the appendix of the paper contains the description of  "f_hessian.cpp".
