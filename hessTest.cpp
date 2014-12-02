@@ -7,18 +7,29 @@
 #include <adolc/adolc_sparse.h>
 #include <adolc/hessian/edge_main.h>
 
-#define COMPUT_GRAPH 1
-#define PRE_ACC 0
 
 #define tag 1
-#define edge_pushing 1
-#define _compare_with_full
 
-//#define _PRINTOUT
+
+#define LIVARH
+//#define LIVARHACC
+//#define DIRECT
+//#define INDIRECT
+
+#define COMPARE_WITH_FULL_HESS
+
+//#define PRINT_RESULTS
+
 #define def_tol (0.000001)
 
+
+// Basically, one can implement his own objective function by implementing
+// the following 3 functions:
+// Get the number of independent variables
 extern int get_num_ind();
+// Get the initial values of independent variables
 extern void get_initial_value(double *x);
+// The objective function
 extern adouble func_eval(adouble *x);
 
 void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c, double *v){
@@ -59,11 +70,8 @@ int main(int argc, char *argv[]) {
   fad >>= f;
   trace_off();
   printf("done!\n");
-//  printf("function value  =<%10.20f>\n",f);
-//  function(tag,1,n,x,&f);
-//  printf("adolc func value=<%10.20f>\n",f);
-//tape_doc(tag,1,n,x,&f);
-#ifdef _compare_with_full
+
+#ifdef COMPARE_WITH_FULL_HESS
   double **H;
   H = myalloc2(n,n);
   printf("computing full hessain....");
@@ -72,7 +80,8 @@ int main(int argc, char *argv[]) {
   printf("done\n");
   gettimeofday(&tv2,NULL);
   printf("Computing the full hessian cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
-#ifdef _PRINTOUT
+
+#ifdef PRINT_RESULTS
     for(i=0;i<n;i++){
       for(j=0;j<n;j++){
         printf("H[%d][%d]=<%10.10f>",i,j,H[i][j]);
@@ -88,19 +97,51 @@ int main(int argc, char *argv[]) {
   double *values = NULL;
   int nnz;
   int options[2];
-  options[0]=PRE_ACC;
-  options[1]=COMPUT_GRAPH;
+
+#ifdef LIVARH
+  options[0]=0;
+  options[1]=1;
   gettimeofday(&tv1,NULL);
   edge_hess(tag, 1, n, x, &nnz, &rind, &cind, &values, options);
   gettimeofday(&tv2,NULL);
-  printf("Sparse Hessian: edge pushing cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+  printf("Sparse Hessian: LivarH cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
 
-#ifdef _PRINTOUT
+#ifdef LIVARHACC
+  options[0]=1;
+  options[1]=1;
+  gettimeofday(&tv1,NULL);
+  edge_hess(tag, 1, n, x, &nnz, &rind, &cind, &values, options);
+  gettimeofday(&tv2,NULL);
+  printf("Sparse Hessian: LivarHACC cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+// Sparse ADOL-C drivers report the upper matrix
+#ifdef DIRECT
+  options[0]=0;
+  options[1]=1;
+  gettimeofday(&tv1,NULL);
+  sparse_hess(tag, n, 0, x, &nnz, &cind, &rind, &values, options);
+  gettimeofday(&tv2,NULL);
+  printf("Sparse Hessian: direct recovery cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+#ifdef INDIRECT
+  options[0]=0;
+  options[1]=0;
+  gettimeofday(&tv1,NULL);
+  sparse_hess(tag, n, 0, x, &nnz, &cind, &rind, &values, options);
+  gettimeofday(&tv2,NULL);
+  printf("Sparse Hessian: indirect recovery cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+#ifdef PRINT_RESULTS
   for(i=0;i<nnz;i++){
     printf("<%d,%d>:<%10.10f>\n",rind[i],cind[i],values[i]);
   }
 #endif
-#ifdef _compare_with_full
+
+#ifdef COMPARE_WITH_FULL_HESS
   compare_matrix(n,H,nnz,rind,cind,values);
   myfree2(H);
 #endif
