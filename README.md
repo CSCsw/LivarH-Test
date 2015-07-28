@@ -23,9 +23,11 @@ CXXFLAGS="-O3" //Optimization level
 OLD_LD_PATH="${LD_LIBRARY_PATH}" //Current LD_LIBRARY_PATH, don't change
 
 AD_LIBS_PATH="${HOME}/adolc_edge/lib64"
+
 AD_INCL_PATH="${HOME}/adolc_edge/include" //The path to the default adolc installation with --enable-sparse. (Change this according to your installation)
 
 PREACC_LIBS_PATH="${HOME}/adolc_preacc/lib64"
+
 PREACC_INCL_PATH="${HOME}/adolc_preacc/include" //The path to the adolc installation with preaccumulation, --enable-preacc. (Change this according to your installation)
 
 The setting is shared by all following scripts.
