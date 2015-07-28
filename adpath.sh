@@ -1,5 +1,10 @@
+#C++ Compiler
 CXX="g++"
+
+#Optimization level
 CXXFLAGS="-O3"
+
+#Current LD_LIBRARY_PATH, don't need to change
 OLD_LD_PATH="${LD_LIBRARY_PATH}"
 
 #The path to the default adolc installation, with --enable-sparse

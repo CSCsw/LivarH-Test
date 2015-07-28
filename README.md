@@ -13,6 +13,26 @@ Except edge_hess() has the dependents check but does not have a repeat flag, and
 
 Include the header "adolc/hessian/edge_main.h"
 And then call edge_hess() in the same way as if sparse_hess() is called.
+## Configuration : adpath.sh
+Change the content in adpath.sh according to your installation. The default values are:
+#C++ compiler
+CXX="g++" 
+
+#Optimization level
+CXXFLAGS="-O3"
+
+#Current LD_LIBRARY_PATH, don't change
+OLD_LD_PATH="${LD_LIBRARY_PATH}"
+
+#The path to the default adolc installation with --enable-sparse. (Change this according to your installation)
+AD_LIBS_PATH="${HOME}/adolc_edge/lib64"
+AD_INCL_PATH="${HOME}/adolc_edge/include"
+
+#The path to the adolc installation with preaccumulation, --enable-preacc. (Change this according to your installation)
+PREACC_LIBS_PATH="${HOME}/adolc_preacc/lib64"
+PREACC_INCL_PATH="${HOME}/adolc_preacc/include"
+
+The setting is shared by all following scripts.
 
 ## hessTest.cpp & functions/test*.cpp : simple & synthetic test functions 
 
@@ -20,41 +40,19 @@ test1-test6: simple functionality tests, some of them may require flags "--enabl
 
 testF1-testF4: the four tests used in performance measurement.
 
-Please refer to autotest.sh to see how to run all the tests automatically.
+The autotest.sh script is provided to automatically run the testF1-testF4 using the setting in the paper. (Table 6 in the paper). Simply type:
+./autotest.sh
 
-Please refer to hessTest.cpp to see how to choose the algorithms.
-
-Only overall runtime is reported, for breakdown performance for Direct/Indirect methods in ADOL-C, please instrument sparse_hess() in "ADOL-C/src/sparse/sparsedriver.cpp".
+Note: only overall runtime is reported, for breakdown performance for Direct/Indirect methods in ADOL-C, please instrument sparse_hess() in "ADOL-C/src/sparse/sparsedriver.cpp".
 
 ##others/mesh/ : mesh optimization problem
+The three dataset used in the paper are : gear.mesh, duct12.mesh, duct8.mesh.Also a "autotest.sh" is provided to regenerate results on these cases. (Table 11 in the paper)
 
-A Makefile is provided, user need to change the ADOLC path in that file.
-
-Then compile with "make" command. To run the test, use
-
-"./meshHess $testdata $testMethod $option0 $option1"
-
-For example:
-
-"./meshHess gear.mesh 0 0 1"
-
-$testdata: the mesh data to be use, we reported "gear.mseh", "duct12.mesh" and "duct8.mesh".
-
-$testMethod: 0 means edge_hess(), 1 means ADOL-C sparse_hess()
-
-$option0/$option1: options[2] provided with the selected methods.
-
-For sparse_hess() :
-```
-options[0] = 0 (safe mode, default) / 1 (tight mode)
-options[1] = 0 (indirect recovery, default) /1 (direct recovery)
-```
-For edge_hess():
-```
-options[0] = 0 (LivarH) / 1 (LivarHAcc)
-options[1] == 1 (fixed as 1, not used anymore)
-```
+Note: the script only run the sparse methods in this case. Because the full hessian takes extrodinally long time to finish. 
 
 ##others/random/ : random hessian generator
+autotestA.sh : Test the performance dependency on number of basic operations per statement. (Figure 10 in the paper)
 
-Also a Makefile is provided. The "hessTest.cpp" is exactly the same as the one used in synthetic tests. And in the appendix of the paper contains the description of  "f_hessian.cpp".
+autotestB.sh : Test the scalability with respect to function complexity. (Figure 12 in the paper)
+
+autotestC.sh : Test the performance dependency on sparsity of the final Hessian. (Figure 13 in the paper)

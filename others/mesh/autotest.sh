@@ -1,7 +1,7 @@
 #!/bin/sh
 . ./../../adpath.sh
 
-for meshdata in gear.mesh duct10.mesh duct8.mesh ; do
+for meshdata in gear.mesh duct12.mesh duct8.mesh ; do
   echo "testing mesh : $meshdata"
   export LD_LIBRARY_PATH=$AD_LIBS_PATH:$OLD_LD_PATH
   for testmethod in LIVARH DIRECT INDIRECT; do
