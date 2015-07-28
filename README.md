@@ -15,20 +15,21 @@ Include the header "adolc/hessian/edge_main.h"
 And then call edge_hess() in the same way as if sparse_hess() is called.
 ## Configuration : adpath.sh
 Change the content in adpath.sh according to your installation. The default values are:
-#C++ compiler
+
+//C++ compiler
 CXX="g++" 
 
-#Optimization level
+//Optimization level
 CXXFLAGS="-O3"
 
-#Current LD_LIBRARY_PATH, don't change
+//Current LD_LIBRARY_PATH, don't change
 OLD_LD_PATH="${LD_LIBRARY_PATH}"
 
-#The path to the default adolc installation with --enable-sparse. (Change this according to your installation)
+//The path to the default adolc installation with --enable-sparse. (Change this according to your installation)
 AD_LIBS_PATH="${HOME}/adolc_edge/lib64"
 AD_INCL_PATH="${HOME}/adolc_edge/include"
 
-#The path to the adolc installation with preaccumulation, --enable-preacc. (Change this according to your installation)
+//The path to the adolc installation with preaccumulation, --enable-preacc. (Change this according to your installation)
 PREACC_LIBS_PATH="${HOME}/adolc_preacc/lib64"
 PREACC_INCL_PATH="${HOME}/adolc_preacc/include"
 
