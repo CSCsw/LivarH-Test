@@ -17,5 +17,5 @@ hessTest.o: hessTest.cpp
 	$(CXX) $(CXXFLAGS) -I$(ADOLCINCL) -c -o hessTest.o hessTest.cpp
 
 clean:
-	rm *.o hessTest
+	rm *.o *.tap hessTest
 

@@ -12,14 +12,14 @@
 
 
 // Pick one method from the following to evaluate the sparse Hessian
-#define LIVARH
+//#define LIVARH
 //#define LIVARHACC
 //#define DIRECT
 //#define INDIRECT
 
 // Define this macro will check the results with a full Hessian routine
 // Do NOT use it with large matrix
-#define COMPARE_WITH_FULL_HESS
+//#define COMPARE_WITH_FULL_HESS
 
 // Define this macro will print out all results
 // #define PRINT_RESULTS
@@ -63,7 +63,9 @@ int main(int argc, char *argv[]) {
   xad=new adouble[n];
   get_initial_value(x);
 
+#ifdef COMPARE_WITH_FULL_HESS
   printf("evaluating the function...");
+#endif
   trace_on(tag);
   for(i=0;i<n;i++)
   {
@@ -72,7 +74,9 @@ int main(int argc, char *argv[]) {
   fad=func_eval(xad); 
   fad >>= f;
   trace_off();
+#ifdef COMPARE_WITH_FULL_HESS
   printf("done!\n");
+#endif
 
 #ifdef COMPARE_WITH_FULL_HESS
   double **H;

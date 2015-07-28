@@ -1,29 +1,23 @@
 #!/bin/sh
-CXX="g++"
-CXXFLAGS="-O3"
-AD_LIBS="-L${HOME}/adolc_edge/lib -ladolc"
-AD_INCL="-I${HOME}/adolc_edge/include/ -I/usr/local/include/"
-meshdata="gear.mesh"
+. ./../../adpath.sh
 
-for testMethod in 0 1
-do
-  for option0 in 0 1
-  do
-    for option1 in 0 1
-    do
-        make > temp.out
-        command="./meshHess $meshdata $testMethod $option0 $option1";
-        echo "$command";
-        $command > output.txt;
-        sort hess.out > hess.sorted;
-        sort edge.out > edge.sorted;
-        cmp -s hess.sorted edge.sorted > /dev/null;
-        if [ $? -eq 1 ]; then
-          echo "WRONG!"
-        else
-          echo "messHess($meshdata, $testMethod, $option0, $option1) CORRECT"
-        fi
-    done
+for meshdata in gear.mesh duct10.mesh duct8.mesh ; do
+  echo "testing mesh : $meshdata"
+  export LD_LIBRARY_PATH=$AD_LIBS_PATH:$OLD_LD_PATH
+  for testmethod in LIVARH DIRECT INDIRECT; do
+    command="$CXX -D $testmethod -O3 -Wno-unused-result -I$AD_INCL_PATH -I./include -o meshHess ./src/meshHess.cpp ./src/fcn3e_am.c ./src/elem3.c ./src/tet.c ./src/mesh3.c ./src/mesh.c ./src/opt3.c ./src/pre3.c -L$AD_LIBS_PATH -ladolc"
+#    echo "$command";
+    $command
+    sh -c "./meshHess $meshdata"
   done
+
+  testmethod="LIVARHACC"
+  export LD_LIBRARY_PATH=$PREACC_LIBS_PATH:$OLD_LD_PATH
+  command="$CXX -D $testmethod -O3 -Wno-unused-result -I$PREACC_INCL_PATH -I./include -o meshHess ./src/meshHess.cpp ./src/fcn3e_am.c ./src/elem3.c ./src/tet.c ./src/mesh3.c ./src/mesh.c ./src/opt3.c ./src/pre3.c -L$PREACC_LIBS_PATH -ladolc"
+#  echo "$command";
+  $command
+  sh -c "./meshHess $meshdata"
+  echo ""
 done
-rm meshHess *.out *.sorted *.tap
+export LD_LIBRARY_PATH=$OLD_LD_PATH
+rm meshHess *.tap

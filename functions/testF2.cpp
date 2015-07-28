@@ -5,7 +5,7 @@ F2 in the paper
 #include <math.h>
 #include <adolc/adolc.h>
 
-#define NUM_IND	200
+#define NUM_IND	20000
 
 #define max(a,b) ((a>b)?a:b)
 #define min(a,b) ((a<b)?a:b)

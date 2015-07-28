@@ -10,6 +10,10 @@ static double hTime=0.0;
 static double afTime=0.0;
 static double ahTime=0.0;
 
+//#define LIVARH
+//#define LIVARHACC
+//#define DIRECT
+//#define INDIRECT
 /*
 int aFcn(double *obj, const Mesh *m)
 */
@@ -113,7 +117,7 @@ int main(int argc, char **argv){
     char *meshFile=argv[1];
     char hessFile[20]="hess.out";
     char edgeFile[20]="edge.out";
-    printf("Reading mesh data=%s ....",meshFile);
+//    printf("Reading mesh data=%s ....",meshFile);
     if (argc>2){
         hessFlag = atoi(argv[2]);
     } else {
@@ -131,7 +135,7 @@ int main(int argc, char **argv){
         return -1;
     }
     hMesh(m);
-    printf("read mesh done.\n");
+//    printf("read mesh done.\n");
     struct timeval tv1,tv2;
     FILE *fp1;
     FILE *fp2;
@@ -139,7 +143,7 @@ int main(int argc, char **argv){
         fp1=fopen(hessFile,"w");
         fp2=fopen(edgeFile,"w");
     }
-    printf("Evaluating hessian...\n");
+//    printf("Evaluating hessian...\n");
     unsigned int tag=1;
     int i;
     int nv=m->nv;
@@ -174,11 +178,48 @@ gettimeofday(&tv1,NULL);
 gettimeofday(&tv2,NULL);
     afTime+=(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000;
 
-    printf("Function evaluation done\n");
+//    printf("Function evaluation done\n");
     unsigned int    *rind  = NULL;
     unsigned int    *cind  = NULL;
     double *values = NULL;
     int nnz;
+#ifdef LIVARH
+    options[0] = 0;
+    options[1] = 1;
+    gettimeofday(&tv1, NULL);
+    edge_hess(tag, 1, n, m->v, &nnz, &rind, &cind, &values, options);
+    gettimeofday(&tv2, NULL);
+    printf("Sparse Hessian: LivarH cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+#ifdef LIVARHACC
+    options[0] = 1;
+    options[1] = 1;
+    gettimeofday(&tv1, NULL);
+    edge_hess(tag, 1, n, m->v, &nnz, &rind, &cind, &values, options);
+    gettimeofday(&tv2, NULL);
+    printf("Sparse Hessian: LivarHACC cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+#ifdef DIRECT
+    options[0] = 0;
+    options[1] = 1;
+    gettimeofday(&tv1, NULL);
+    sparse_hess(tag, n, 0, m->v, &nnz, &cind, &rind, &values, options);
+    gettimeofday(&tv2, NULL);
+    printf("Sparse Hessian: direct recovery cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+#ifdef INDIRECT
+    options[0] = 0;
+    options[1] = 0;
+    gettimeofday(&tv1, NULL);
+    sparse_hess(tag, n, 0, m->v, &nnz, &cind, &rind, &values, options);
+    gettimeofday(&tv2, NULL);
+    printf("Sparse Hessian: indirect recovery cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif
+
+/*
 gettimeofday(&tv1,NULL);
     if (hessFlag == 0){
         edge_hess(tag, 1, n, m->v, &nnz, &rind, &cind, &values, options);
@@ -214,6 +255,7 @@ gettimeofday(&tv2,NULL);
     printf("Total Analytic    Hessian Time Estimate=<%10.6f>\n",hTime/nh);
     printf("Total Overloaded Function Time Estimate=<%10.6f>\n",afTime/nh);
     printf("Total Overloaded  Hessian Time Estimate=<%10.6f>\n",ahTime/nh);
+*/
     freeMesh(&m);
     return 0;
 }

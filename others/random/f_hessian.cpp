@@ -5,9 +5,9 @@
 
 #include <adolc/adolc.h>
 
-#define NUM_IND 20000
+//#define NUM_IND 20000
 
-#define K_NNZ 3
+//#define K_NNZ 3
 
 #define EXP_1 1.0+x[i]*x[r]
 #define EXP_2 EXP_1+EXP_1
@@ -85,6 +85,9 @@
 
 #define STMT_1_256 fad+=EXP_256;
 
+
+// #define LOOP_BODY STMT_4_16 // the loop body
+
 int get_num_ind(){
   return NUM_IND;
 }
@@ -103,7 +106,7 @@ adouble func_eval(adouble * x){
   for(i = 0; i < NUM_IND; ++i) {
     for(j = 0; j < K_NNZ; j++) {
       r = rand() % NUM_IND;
-      STMT_4_16;
+      LOOP_BODY;
     }
   }
   return(fad);

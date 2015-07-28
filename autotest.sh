@@ -1,13 +1,22 @@
 #!/bin/sh
-CXX="g++"
-CXXFLAGS="-O3"
-ADOLCLIBS="-L${HOME}/adolc_edge/lib -ladolc"
-ADOLCINCL="-I${HOME}/adolc_edge/include/ -I/usr/local/include/"
+. ./adpath.sh
 
-for testfunc in ./functions/* ; do
-  command="$CXX $CXXFLAGS $ADOLCINCL -o hessTest hessTest.cpp $testfunc $ADOLCLIBS"; 
-  echo "$command";
+for testfunc in ./functions/testF1.cpp ./functions/testF2.cpp ./functions/testF3.cpp ./functions/testF4.cpp ; do
+  echo "testing: $testfunc"
+  export LD_LIBRARY_PATH=$AD_LIBS_PATH:$OLD_LD_PATH
+  for testmethod in COMPARE_WITH_FULL LIVARH DIRECT INDIRECT; do
+    command="$CXX -D $testmethod $CXXFLAGS -I$AD_INCL_PATH -o hessTest hessTest.cpp $testfunc -L$AD_LIBS_PATH -ladolc"; 
+    #echo "$command";
+    $command
+    sh -c "./hessTest";
+  done
+  testmethod="LIVARHACC"
+  export LD_LIBRARY_PATH=$PREACC_LIBS_PATH:$OLD_LD_PATH
+  command="$CXX -D $testmethod $CXXFLAGS -I$PREACC_INCL_PATH -o hessTest hessTest.cpp $testfunc -L$PREACC_LIBS_PATH -ladolc"; 
+  #echo "$command";
   $command
   sh -c "./hessTest";
+  echo ""
 done
-rm hessTest
+export LD_LIBRARY_PATH=$OLD_LD_PATH
+rm hessTest *.tap
