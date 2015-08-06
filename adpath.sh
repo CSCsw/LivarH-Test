@@ -2,7 +2,7 @@
 CXX="g++"
 
 #Optimization level
-CXXFLAGS="-O3"
+CXXFLAGS="-O3 -w"
 
 #Current LD_LIBRARY_PATH, don't need to change
 OLD_LD_PATH="${LD_LIBRARY_PATH}"
