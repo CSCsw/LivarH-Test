@@ -2,8 +2,11 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <adolc/adolc.h>
-#include <adolc/adolc_sparse.h>
 #include <adolc/hessian/edge_main.h>
+
+#ifndef LIVARHACC
+#include <adolc/adolc_sparse.h>
+#endif
 
 static double fTime=0.0;
 static double hTime=0.0;
