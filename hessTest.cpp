@@ -14,6 +14,7 @@
 
 
 // Pick one method from the following to evaluate the sparse Hessian
+//#define COMPUTE_FULL_HESS
 //#define LIVARH
 //#define LIVARHACC
 //#define DIRECT
@@ -23,10 +24,11 @@
 // Do NOT use it with large matrix
 //#define COMPARE_WITH_FULL_HESS
 
+
 // Define this macro will print out all results
 // #define PRINT_RESULTS
 
-#define def_tol (0.000001)
+
 
 // Basically, one can implement his own objective function by implementing
 // the following 3 functions:
@@ -36,6 +38,15 @@ extern int get_num_ind();
 extern void get_initial_value(double *x);
 // The objective function
 extern adouble func_eval(adouble *x);
+
+
+
+// WHEN COMPARE_WITH_FULL_HESS, we need COMPUTE_FULL_HESS
+#ifdef COMPARE_WITH_FULL_HESS
+  #define COMPUTE_FULL_HESS
+#endif
+
+#define def_tol (0.000001)
 
 void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c, double *v){
   int i,j;
@@ -53,6 +64,7 @@ void compare_matrix(int n, double** H, int nnz, unsigned int *r, unsigned int *c
   }
   printf("CORRECT!\n");
 }
+
 int main(int argc, char *argv[]) {
   int n=get_num_ind();
   int i,j;
@@ -80,13 +92,13 @@ int main(int argc, char *argv[]) {
   printf("done!\n");
 #endif
 
-#ifdef COMPARE_WITH_FULL_HESS
+#ifdef COMPUTE_FULL_HESS
   double **H;
   H = myalloc2(n,n);
-  printf("computing full hessain....");
+  //printf("computing full hessain....");
   gettimeofday(&tv1,NULL);
   hessian(tag,n,x,H);
-  printf("done\n");
+  //printf("done\n");
   gettimeofday(&tv2,NULL);
   printf("Computing the full hessian cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
 
@@ -98,8 +110,8 @@ int main(int argc, char *argv[]) {
       printf("\n");
     }
     printf("\n");
-#endif
-#endif
+#endif // PRINT_RESULTS
+#endif // COMPUTE_FULL_HESS
 
   unsigned int    *rind  = NULL;
   unsigned int    *cind  = NULL;
