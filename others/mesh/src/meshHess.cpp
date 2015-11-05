@@ -13,6 +13,8 @@ static double hTime=0.0;
 static double afTime=0.0;
 static double ahTime=0.0;
 
+
+//#define COMPUTE_FULL_HESS
 //#define LIVARH
 //#define LIVARHACC
 //#define DIRECT
@@ -180,6 +182,15 @@ gettimeofday(&tv1,NULL);
 //Done
 gettimeofday(&tv2,NULL);
     afTime+=(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000;
+
+#ifdef COMPUTE_FULL_HESS
+  double **H;
+  H = myalloc2(n, n);
+  gettimeofday(&tv1, NULL);
+  hessian(tag, n, m->v, H);
+  gettimeofday(&tv2, NULL);
+  printf("Dense Full Hessian cost %10.6f seconds\n",(tv2.tv_sec-tv1.tv_sec)+(double)(tv2.tv_usec-tv1.tv_usec)/1000000);
+#endif // COMPUTE_FULL_HESS
 
 //    printf("Function evaluation done\n");
     unsigned int    *rind  = NULL;
